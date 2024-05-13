@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Appointment } from "./Appointment";
 
 @Entity("treatment")
 export class Treatsment {
@@ -10,4 +11,9 @@ export class Treatsment {
 
     @Column({ name:"price" })
     price!: number;
+
+    //Relation
+
+    @OneToMany(() => Appointment, (appointment) => appointment.treatment)
+    appointment?: Appointment[];
 }

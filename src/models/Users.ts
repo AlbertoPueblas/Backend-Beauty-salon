@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Role } from "./Role";
+import { Appointment } from "./Appointment";
 
 @Entity("users")
 export class Users {
@@ -25,5 +26,17 @@ export class Users {
     isActive!: string;
 
     @Column({ name: "role_id" })
+    roleId!: Role;
+
+    //Relation
+
+    @ManyToOne(() => Role, (role) => role.users )
+    @JoinColumn({ name:"role_id" })
     role!: Role;
+
+    @OneToMany(() => Appointment, (dates) => dates.client)
+    clientDates?: Appointment[];
+
+    @OneToMany(() => Appointment, (dates) => dates.stylist)
+    stylist!: Users;
 }
