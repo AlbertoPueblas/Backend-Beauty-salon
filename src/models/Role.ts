@@ -1,10 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Users } from "./Users";
 
 //-------------------------------------------------------------------
 
 @Entity("roles")
-export class Role {
+export class Role extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -13,7 +13,7 @@ export class Role {
 
     //Relation
 
-    @OneToMany(() => Users, (user) => user.role )
+    @OneToMany(() => Users, (users) => users.role )
     users?: Users[];
 }
 

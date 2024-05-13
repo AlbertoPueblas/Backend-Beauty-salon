@@ -5,7 +5,7 @@ export class CreateTreatmentTable1715603331066 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
            new Table({
-              name: "treatment",
+              name: "treatsment",
               columns: [
                  {
                     name: "id",
@@ -15,7 +15,7 @@ export class CreateTreatmentTable1715603331066 implements MigrationInterface {
                     generationStrategy: "increment",
                  },
                  {
-                    name: "treatment",
+                    name: "treatsment",
                     type: "varchar",
                     length: "255",
                  },
@@ -31,7 +31,7 @@ export class CreateTreatmentTable1715603331066 implements MigrationInterface {
      }
   
      public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("treatment");
+        await queryRunner.dropTable("treatsment");
      }
 
 }

@@ -3,5 +3,5 @@ export const SeederConfig = {
     STYLIST: 10,
     CLIENT: 90,
     TREATSMENT: 30,
-    DATES: 100,
+    APPOINTMENT: 100,
 }

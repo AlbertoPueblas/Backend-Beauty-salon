@@ -1,9 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Role } from "./Role";
 import { Appointment } from "./Appointment";
 
+//-------------------------------------------------------------
+
 @Entity("users")
-export class Users {
+export class Users extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -20,13 +22,13 @@ export class Users {
     password!: string;
 
     @Column({ name: "phone" })
-    phone!: number;
+    phone!: string;
 
     @Column({ name: "is_active" })
     isActive!: string;
 
     @Column({ name: "role_id" })
-    roleId!: Role;
+    roleId!: number;
 
     //Relation
 
