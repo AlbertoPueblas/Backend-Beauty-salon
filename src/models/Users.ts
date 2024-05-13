@@ -20,7 +20,7 @@ export class Users {
     password!: string;
 
     @Column({ name: "phone" })
-    phone!: string;
+    phone!: number;
 
     @Column({ name: "is_active" })
     isActive!: string;

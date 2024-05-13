@@ -5,7 +5,7 @@ import { Treatsment } from "./Treatsment";
 @Entity("appointment")
 export class Appointment {
     @PrimaryGeneratedColumn()
-    id!: string;
+    id!: number;
 
     @Column({ name:"appointment_date" })
     appointmentDate!: Date;
