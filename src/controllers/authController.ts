@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Users } from "../models/Users";
 import bcrypt from "bcrypt";
-import { UserRoles } from "../constants/UserRole";
+import { UserRole } from "../constants/UserRole";
 import jwt from "jsonwebtoken";
 
 //----------------------------------------------
@@ -37,7 +37,7 @@ export const authController = {
                 firstName: firstName,
                 email: email,
                 password:  hasedPassword,
-                role: UserRoles.CLIENT,
+                role: UserRole.CLIENT,
             });
 
             await Users.save(newUser);
