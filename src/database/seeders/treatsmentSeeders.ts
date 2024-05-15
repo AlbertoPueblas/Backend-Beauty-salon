@@ -1,5 +1,4 @@
 import { SeederConfig } from "../../config/seeders";
-import { getRandomValueFromArray } from "../../helpers/common";
 import { Treatsment } from "../../models/Treatsment";
 import { TreatsmentFactory } from "../factories/TreatsmentFactory";
 import { Seeder } from "./Seeders";

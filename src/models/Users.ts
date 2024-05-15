@@ -25,7 +25,7 @@ export class Users extends BaseEntity {
     phone!: string;
 
     @Column({ name: "is_active" })
-    isActive!: string;
+    isActive!: boolean;
 
     @Column({ name: "role_id" })
     roleId!: number;

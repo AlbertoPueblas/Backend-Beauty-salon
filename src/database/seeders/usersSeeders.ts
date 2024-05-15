@@ -1,5 +1,5 @@
 import { SeederConfig } from "../../config/seeders"
-import { UserRoles } from "../../constants/UserRole";
+import { UserRole } from "../../constants/UserRole";
 import { Users } from "../../models/Users";
 import { UserFactory } from "../factories/UserFactory";
 import { Seeder } from "./Seeders"
@@ -16,7 +16,7 @@ export class UsersSeeder extends Seeder {
       //admin
       const adminUsers = usersFactory.createMany(ADMINS);
       adminUsers.forEach((user, i) =>{
-         user.role = UserRoles.ADMIN;
+         user.role = UserRole.ADMIN;
          user.email = `admin${i + 1}@admin.com`;
 
       });
@@ -24,14 +24,14 @@ export class UsersSeeder extends Seeder {
       //Managers
       const stylistUsers = usersFactory.createMany(STYLIST);
       stylistUsers.forEach((user, i) =>{
-         user.role = UserRoles.STYLIST;
+         user.role = UserRole.STYLIST;
          user.email = `artist${i + 1}@manager.com`;
       });
 
       //Clients
       const clientUsers = usersFactory.createMany(CLIENT);
       clientUsers.forEach((user) =>{
-         user.role = UserRoles.CLIENT;
+         user.role = UserRole.CLIENT;
 
       });
 

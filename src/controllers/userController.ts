@@ -239,5 +239,80 @@ export const userController = {
                 message: "Failed to update dates",
             });
         }
-    }
+    },
+
+    async deleteProfileByUser (req: Request, res: Response): Promise<void> {
+        try {
+            const userId = Number(req.tokenData.userId)
+
+            const userToDelete = await Users.findOne({ where: { id: userId } });
+            if (!userToDelete) {
+                res.status(404).json({
+                    message: "User not found"
+                });
+                return;
+            }
+
+        // Actualizar el campo isActive a false
+        userToDelete.isActive = false;
+        await userToDelete.save();
+
+        res.status(202).json({
+            message: "User has been deactivated",
+        });
+        } catch (error) {
+            res.status(500).json({
+                message: "An error occurred while trying to delete the user"
+            });
+        }
+    },
+
+    async restoreProfileByAdmin (req: Request, res: Response): Promise<void> {
+        try {
+            const userRest = Number(req.params.id)
+            const userToRestore = await Users.findOne({ where: { id: userRest } });
+
+            if (!userToRestore) {
+                res.status(404).json({
+                    message: "User not found"
+                });
+                return;
+            }
+            userToRestore.isActive = true;
+            await userToRestore.save();
+
+            res.status(202).json({
+                message: "User has been Activated",
+            });
+
+        } catch (error) {
+            res.status(500).json({
+                message: "An error occurred while trying to restore the user"
+            });
+        }
+    },
+
+    async deleteProfileByAdmin (req: Request, res: Response): Promise<void> {
+        try {
+            
+            const userRest = Number(req.params.id);
+            
+            const userToDelete = await Users.delete({ id: userRest });
+
+            if (userToDelete.affected === 0) {
+                res.status(404).json({
+                    message: "User not found"
+                });
+                return;
+            }
+            res.status(202).json({
+                message: "User has been deleted",
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "Failed to delete user",
+                error: (error as any).message
+            });
+        }
+    },
 };
