@@ -79,10 +79,9 @@ Tecnologías utilizadas:
 			"phone": "1994909995998439"
 		},
     ```
-    - GET USER BY ID
+- GET USER BY ID
  
         GET http://localhost:3000/api/user/user/19  
-    user:
     ``` ts
         {
 	        "id": 19,
@@ -340,13 +339,14 @@ Tecnologías utilizadas:
 - PUT DELETE APPOINTMENT (isActive:true)-->(isActive:false)
 
     PUT http://localhost:3000/api/user/delete
+
  ```ts
     {
 	"message": "User has been deactivated"
     }
  ```
 
--DELETE APPOINTMENT BY ID
+- DELETE APPOINTMENT BY ID
 
         DELETE http://localhost:3000/api/appointment/deleteAppointment
 ```ts
@@ -354,3 +354,32 @@ Tecnologías utilizadas:
 	"message": "Appointment has been deleted"
     }
 ```
+
+## Contribuciones
+Las sugerencias y aportaciones son siempre bienvenidas.  
+
+Puedes hacerlo de dos maneras:
+
+1. Abriendo una issue
+2. Crea un fork del repositorio
+    - Crea una nueva rama  
+        ```
+        $ git checkout -b feature/nombreUsuario-mejora
+        ```
+    - Haz un commit con tus cambios 
+        ```
+        $ git commit -m 'feat: mejora X cosa'
+        ```
+    - Haz push a la rama 
+        ```
+        $ git push origin feature/nombreUsuario-mejora
+        ```
+    - Abre una solicitud de Pull Request
+
+## Licencia
+Este proyecto se encuentra bajo licencia de "Alberto Pueblas"
+
+## Webgrafia:
+Para conseguir adquirir mas conocimientos he recopilado información de:
+- webs
+- link a documentacion de librerias externas
