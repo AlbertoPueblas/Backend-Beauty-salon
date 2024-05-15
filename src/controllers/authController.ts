@@ -75,10 +75,11 @@ export const authController = {
                  select: { 
                     id: true, 
                     email: true, 
-                    password: true 
+                    password: true, 
+                    isActive: true
                 },
             });
-            if (!user) {
+            if (!user?.isActive) {
                 res.status(400).json ({
                     message: 'User not found'
                 });
