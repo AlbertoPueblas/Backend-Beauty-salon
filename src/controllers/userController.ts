@@ -12,7 +12,7 @@ export const userController = {
         try {
             const stylistId = UserRole.STYLIST
 
-            const [stylist] = await Users.findAndCount({
+            const [stylists, totalStylists] = await Users.findAndCount({
                 select: {
                     id: true,
                     firstName: true,
@@ -24,7 +24,7 @@ export const userController = {
                     role: stylistId
                 }
             });
-            if (stylist.length === 0) {
+            if (stylists.length === 0) {
                 res.status(404).json({
                     message: "Stylist not found"
                 });
@@ -32,7 +32,7 @@ export const userController = {
             }
 
             res.status(200).json({
-                stylist: stylist,
+                stylists: stylists,
             });
         } catch (error) {
             res.status(500).json({
@@ -46,7 +46,7 @@ export const userController = {
         try {
             //Pagination
             const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 25;
+            const limit = Number(req.query.limit) || 12;
 
             const [users, totalUsers] = await Users.findAndCount({
                 select: {
@@ -55,7 +55,14 @@ export const userController = {
                     lastName: true,
                     email: true,
                     phone: true,
+                    isActive:true,
                 },
+                relations: {
+                    clientDates: {
+
+                    }
+                },
+
                 skip: (page - 1) * limit,
                 take: limit,
             });
@@ -124,7 +131,11 @@ export const userController = {
                     firstName: true,
                     lastName: true,
                     email: true,
-                    phone: true,
+                    phone: true
+                },
+                relations : {
+                    clientDates: true
+
                 },
                 where: {
                     id: userId
@@ -151,17 +162,31 @@ export const userController = {
             const userId = Number(req.tokenData.userId);
 
             const user = await Users.findOne({
+                relations: {
+                    clientDates: {
+                        stylist: true,
+                        treatment: true,
+                    },
+                },
                 select: {
                     id: true,
-                    firstName: true,
                     lastName: true,
                     email: true,
                     phone: true,
-                    clientDates: true,
-                },
-                relations: {
                     clientDates: {
-                    }
+                        id: true,
+                        appointmentDate: true,
+                        stylist: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                        },
+                        treatment: {
+                            id: true,
+                            treatment: true,
+                            price: true,
+                        },
+                    },
                 },
                 where: {
                     id: userId
@@ -207,7 +232,7 @@ export const userController = {
         try {
             const userId = Number(req.tokenData.userId);
 
-            const { password, ...resUserData } = req.body;
+            const { currentPassword, password, ...resUserData } = req.body;
 
             const userToUpdate = await Users.findOne({ where: { id: userId } });
 
@@ -218,17 +243,23 @@ export const userController = {
                 return;
             }
 
+            if (currentPassword && userToUpdate.password) {
+                const isMatch = await bcrypt.compare(currentPassword, userToUpdate.password);
+                if (!isMatch) {
+                    res.status(401).json({ message: "Contraseña actual incorrecta" });
+                    return;
+                }
+            }
+    
+
             if (password) {
                 const hashedPassword = bcrypt.hashSync(password, 10);
-                userToUpdate!.password = hashedPassword;
+                userToUpdate.password = hashedPassword;
             }
 
-            const updatedUser: Partial<Users> = {
-                ...userToUpdate,
-                ...resUserData,
-            };
+            Object.assign(userToUpdate, resUserData);
 
-            await Users.save(updatedUser)
+            await Users.save(userToUpdate)
 
             res.status(202).json({
                 message: "User has been updated",
@@ -237,6 +268,7 @@ export const userController = {
         } catch (error) {
             res.status(500).json({
                 message: "Failed to update dates",
+                error: ( error as any ).message
             });
         }
     },
@@ -287,7 +319,8 @@ export const userController = {
 
         } catch (error) {
             res.status(500).json({
-                message: "An error occurred while trying to restore the user"
+                message: "An error occurred while trying to restore the user",
+                error:(error as any).message
             });
         }
     },

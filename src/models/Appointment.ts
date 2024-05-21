@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Users } from "./Users";
-import { Treatsment } from "./Treatsment";
+import { Treatment } from "./Treatment";
 
 @Entity("appointment")
 export class Appointment extends BaseEntity {
@@ -13,8 +13,8 @@ export class Appointment extends BaseEntity {
     @Column({ name:"user_id" })
     userId!: number;
 
-    @Column({ name:"treatsment_id" })
-    treatsmentId!: number;
+    @Column({ name:"treatment_id" })
+    treatmentId!: number;
 
     @Column({ name:"stylist_id" })
     stylistId!: number;
@@ -24,9 +24,9 @@ export class Appointment extends BaseEntity {
     @JoinColumn({ name: "user_id"})
     client!: Users;
 
-    @ManyToOne(() => Treatsment, (treatsment) => treatsment.appointment)
-    @JoinColumn({ name:"treatsment_id"})
-    treatsment!: Treatsment
+    @ManyToOne(() => Treatment, (treatment) => treatment.appointment)
+    @JoinColumn({ name:"treatment_id"})
+    treatment!: Treatment
 
     @ManyToOne(() => Users, (user) => user.stylist)
     @JoinColumn({ name: "stylist_id"})

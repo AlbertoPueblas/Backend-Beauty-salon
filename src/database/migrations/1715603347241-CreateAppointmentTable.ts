@@ -23,7 +23,7 @@ export class CreateAppointmentTable1715603347241 implements MigrationInterface {
                     type: "int",
                  },      
                  {
-                    name: "treatsment_id",
+                    name: "treatment_id",
                     type: "int",
                  },
                  {
@@ -39,8 +39,8 @@ export class CreateAppointmentTable1715603347241 implements MigrationInterface {
                     onDelete:"CASCADE"
                  },                 
                  {
-                  columnNames: ["treatsment_id"],
-                  referencedTableName: "treatsment",
+                  columnNames: ["treatment_id"],
+                  referencedTableName: "treatment",
                   referencedColumnNames: ["id"],
                   },
                   {

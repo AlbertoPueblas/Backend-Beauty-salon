@@ -55,12 +55,12 @@ export const authController = {
 
     async login (req: Request, res: Response ): Promise<void> {
         try {
-            const { email, password } = req.body;
+            const { email, password, role } = req.body;
             console.log(req.body);
 
-            if( !email || !password ) {
+            if( !email || !password || role ) {
                 res.status(400).json ({
-                    message: 'Please fill all fieldsssss'
+                    message: 'Please fill all fields'
                 });
                 return;
             }
@@ -76,9 +76,18 @@ export const authController = {
                     id: true, 
                     email: true, 
                     password: true, 
-                    isActive: true
+                    isActive: true,
+ 
                 },
             });
+
+            if(!user) {
+                res.status(400).json ({
+                    message: 'User not found'
+                });
+                return;
+            }
+
             if (!user?.isActive) {
                 res.status(400).json ({
                     message: 'User not found'
@@ -94,8 +103,10 @@ export const authController = {
             }
             const tokenPayload = {
                 userId: user.id,
-                userRole: user.role.name,
+                userRole: user.role.id,
+                
             };
+            console.log(tokenPayload,"token payload");
 
             const token = jwt.sign(
                 tokenPayload,

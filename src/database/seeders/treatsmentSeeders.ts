@@ -1,16 +1,16 @@
 import { SeederConfig } from "../../config/seeders";
-import { Treatsment } from "../../models/Treatsment";
-import { TreatsmentFactory } from "../factories/TreatsmentFactory";
+import { Treatment } from "../../models/Treatment";
+import { TreatmentFactory } from "../factories/TreatmentFactory";
 import { Seeder } from "./Seeders";
 
 //------------------------------------------------------------------------------
 
-export class TreatsmentSeeder extends Seeder {
+export class TreatmentSeeder extends Seeder {
    protected async generate(): Promise<void> {
-      const { TREATSMENT } = SeederConfig;
+      const { TREATMENT } = SeederConfig;
 
-      const treatsment = new TreatsmentFactory().createMany(TREATSMENT);
+      const treatment = new TreatmentFactory().createMany(TREATMENT);
 
-      await Treatsment.save(treatsment);
+      await Treatment.save(treatment);
    }
 }

@@ -10,9 +10,9 @@ export const appointmentController = {
         try {
             const userId = Number(req.tokenData.userId)
 
-            const { appointmentDate, treatsmentId, stylistId } = req.body;
+            const { appointmentDate, treatmentId, stylistId } = req.body;
 
-            if (!appointmentDate || !treatsmentId || !stylistId) {
+            if (!appointmentDate || !treatmentId || !stylistId) {
                 res.status(400).json({
                     message: "Invalid data"
                 });
@@ -25,7 +25,7 @@ export const appointmentController = {
             });
             const appointmentCreate = Appointment.create({
                 appointmentDate: appointmentDate,
-                treatsmentId: treatsmentId,
+                treatmentId: treatmentId,
                 stylistId: stylistId,
                 userId: userId
             });
@@ -46,16 +46,35 @@ export const appointmentController = {
         try {
             //pagination
             const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 25;
+            const limit = Number(req.query.limit) || 15;
 
             const [appointment, totalAppointment] = await Appointment.findAndCount({
+                
+                relations:{
+                    client: true,
+                    treatment: true,
+                    stylist: true,
+                },
                 select: {
                     id: true,
                     appointmentDate: true,
                     userId: true,
-                    treatsmentId: true,
+                    treatmentId: true,
                     stylistId: true,
+                    client:{
+                        firstName: true,
+                        email: true,
+                        phone: true,
+                    },
+                    treatment:{
+                        treatment: true,
+                    },
+                    stylist:{
+                        firstName: true,
+                    }
                 },
+            
+ 
                 skip: (page - 1) * limit,
                 take: limit,
             });
@@ -78,6 +97,7 @@ export const appointmentController = {
         } catch (error) {
             res.status(500).json({
                 message: "Something went wrong",
+                error: (error as any)
             });
         }
     },
@@ -91,7 +111,7 @@ export const appointmentController = {
                     id: true,
                     appointmentDate: true,
                     userId: true,
-                    treatsmentId: true,
+                    treatmentId: true,
                     stylistId: true,
                 },
                 where: {
@@ -115,58 +135,102 @@ export const appointmentController = {
 
     async updateAppointment(req: Request, res: Response): Promise<void> {
         try {
-            const dateId = Number(req.tokenData.id)
-            
-            const {...resDatesData} = req.body;
-            
-            console.log(resDatesData, " yo soy data");
-            const dateToUpdate = await Appointment.findOne({where: {id: resDatesData.id}});
-                if(!dateToUpdate) {
-                    res.status(404).json({ message: "Date not found" });
-
-                    return;
-                }
-                
-                const updatedDate: Partial<Appointment> = {
-                    ...dateToUpdate,
-                    ...resDatesData,
-                    id: Number(resDatesData.id)
-                };
-                
-                await Appointment.save(updatedDate);
-
-                res.status(202).json({
-                    message: "Appointment has been updated",
-                });
-                
-            } catch (error) {
-                res.status(500).json({
-                    message: "Update not found",
-                    error: (error as any).message,
-                });      
-            }      
-        },
+            const { id, appointmentDate, stylistId, treatmentId } = req.body;
+    
+            const dateToUpdate = await Appointment.findOne({ where: { id } });
+            if (!dateToUpdate) {
+                res.status(404).json({ message: "Date not found" });
+                return;
+            }
+    
+            dateToUpdate.appointmentDate = appointmentDate;
+            dateToUpdate.stylistId = stylistId;
+            dateToUpdate.treatmentId = treatmentId;
+    
+            await dateToUpdate.save();
+    
+            res.status(202).json({
+                message: "Appointment has been updated",
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "Update not found",
+                error: (error as any).message,
+            });
+        }
+    },
     
 
-        async deleteAppointment(req: Request, res: Response): Promise<void> {
-            try {
-                const appointmentId = Number(req.params.id);
-                
-                const appointmentToDelete = await Appointment.delete(appointmentId);
-                if (appointmentToDelete.affected === 0) {
-                    res.status(404).json({
-                        message: "Appointment not found"
-                    });
-                    return;
-                }
-                res.status(200).json({
-                    message: "Appointment has been deleted"
+    async deleteAppointment(req: Request, res: Response): Promise<void> {
+        try {
+            const appointmentId = Number(req.params.id);
+
+            const appointmentToDelete = await Appointment.delete(appointmentId);
+            if (appointmentToDelete.affected === 0) {
+                res.status(404).json({
+                    message: "Appointment not found"
                 });
-        
-            } catch (error) {
-                res.status(500).json({
-                    message: "Failed to delete appointment",
-                    error: (error as any).message
+                return;
+            }
+            res.status(200).json({
+                message: "Appointment has been deleted"
+            });
+
+        } catch (error) {
+            res.status(500).json({
+                message: "Failed to delete appointment",
+                error: (error as any).message
+            })
+        }
+    },
+    async updateByAdminStylist(req: Request, res: Response): Promise<void> {
+        try {
+            const appointmentId = Number(req.params.id);
+    
+            // Desestructurar los campos que se deben actualizar desde el cuerpo de la solicitud
+            const { ...updateDate } = req.body;
+    
+            // Buscar la cita por ID
+            const appointmentToUpdate = await Appointment.findOne({ where: { id: appointmentId } });
+            if (!appointmentToUpdate) {
+                res.status(404).json({ message: "Appointment not found" });
+                return;
+            }
+    
+            // Actualizar los campos de la cita
+            Object.assign(appointmentToUpdate, updateDate);
+    
+            // Guardar los cambios
+            await appointmentToUpdate.save();
+    
+            // Responder con la cita actualizada
+            res.status(200).json(appointmentToUpdate);
+    
+        } catch (error) {
+            // Manejo de errores
+            console.error(error);
+            res.status(500).json({ message: "Failed to update appointment" });
+        }
+    },
+
+    async deleteAppointmentByAdmin (req: Request, res: Response): Promise <void> {
+        try {
+            const appointment = Number(req.params.id);
+
+            const deleteByAdmin = await Appointment.delete(appointment);
+            if (!deleteByAdmin) {
+                res.status(404).json({
+                    message: "Appointment not found"
+                });
+                return;
+            }
+            res.status(200).json({
+                message: "Appointment has been deleted"
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "Failed to delete appointment",
+                error: (error as any).message
             })
         }
     }

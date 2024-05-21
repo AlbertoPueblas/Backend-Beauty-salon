@@ -1,7 +1,7 @@
-import { AppointmentSeeder } from "./AppointmentSeeders";
-import { RoleSeeder } from "./RoleSeeders";
-import { UsersSeeder } from "./UsersSeeders";
-import { TreatsmentSeeder } from "./TreatsmentSeeders"
+import { AppointmentSeeder } from "./appointmentSeeders";
+import { RoleSeeder } from "./roleSeeders";
+import { UsersSeeder } from "./usersSeeders";
+import { TreatmentSeeder } from "./treatsmentSeeders"
 
 //--------------------------------------------
 
@@ -11,7 +11,7 @@ import { TreatsmentSeeder } from "./TreatsmentSeeders"
 
     await new RoleSeeder().start();
     await new UsersSeeder().start();
-    await new TreatsmentSeeder().start()
+    await new TreatmentSeeder().start()
     await new AppointmentSeeder().start()
     
 })();

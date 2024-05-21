@@ -9,7 +9,7 @@ export class AppointmentFactory extends Factory<Appointment> {
         return{
             appointmentDate: faker.date.future(),
             userId: faker.number.int(),
-            treatsmentId: faker.number.int(),
+            treatmentId: faker.number.int(),
             stylistId: faker.number.int()
         } as Appointment;
       }
