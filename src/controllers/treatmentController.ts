@@ -37,7 +37,7 @@ export const treatmentController = {
         try {
             //Pagination
             const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 10;
+            const limit = Number(req.query.limit) || 15;
 
             const [treatment, totalTreatment] = await Treatment.findAndCount({
                 select: {
@@ -115,7 +115,9 @@ export const treatmentController = {
             }
             const updateTreatment: Partial<Treatment> = {
                 ...resTreatmentData,
+                
             }
+            console.log(updateTreatment);
 
             await Treatment.save(updateTreatment);
 
@@ -147,6 +149,7 @@ export const treatmentController = {
         } catch (error) {
             res.status(500).json({
                 message: "Failed to delete treatment",
+                error: (error as any).message
             })
         }
     },

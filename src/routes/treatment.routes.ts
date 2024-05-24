@@ -12,7 +12,7 @@ router.post("/newTreatment",auth, authorize(["Admin"]), treatmentController.crea
 router.get("/allTreatment",auth, authorize(["Admin"]), treatmentController.getAllTreatment);
 router.get("/Treatment/:id",auth, authorize(["Admin"]), treatmentController.getTreatmentById);
 router.put("/putTreatment",auth, authorize(["Admin"]), treatmentController.updateTreatment);
-router.delete("/dellTreatment/:id",auth, authorize(["Admin"]), treatmentController.deleteTreatment);
+router.delete("/delTreatment/:id",auth, authorize(["Admin"]), treatmentController.deleteTreatment);
 
 
 

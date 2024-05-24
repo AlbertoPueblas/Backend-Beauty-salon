@@ -12,8 +12,9 @@ const router = express.Router();
 router.get("/allUsers", auth, authorize(["Admin", "Stylist"]), userController.getAllUsers);
 router.get("/allStylist", auth, authorize(["Admin"]), userController.getAllStylist);
 router.get("/user/:id", auth, authorize(["Admin"]), userController.getUserById);
-router.get("/appointment/:id", auth, authorize(["Admin", "Stylist"]), userController.getAppointmentById);
+router.get("/appointments/:id", auth, authorize(["Admin", "Stylist"]), userController.getAppointmentById);
 router.put("/restore/:id", auth, authorize(["Admin"]), userController.restoreProfileByAdmin);
+router.put("/disable/:id", auth, authorize(["Admin"]), userController.desactiveProfileByAdmin);
 router.delete("/permanentDell/:id",auth,authorize(["Admin"]), userController.deleteProfileByAdmin)
 
 

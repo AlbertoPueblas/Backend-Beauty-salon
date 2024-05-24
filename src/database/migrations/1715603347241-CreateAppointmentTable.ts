@@ -42,6 +42,7 @@ export class CreateAppointmentTable1715603347241 implements MigrationInterface {
                   columnNames: ["treatment_id"],
                   referencedTableName: "treatment",
                   referencedColumnNames: ["id"],
+                  onDelete:"CASCADE"
                   },
                   {
                      columnNames: ["stylist_id"],

@@ -107,17 +107,30 @@ export const appointmentController = {
             const appointmentId = Number(req.params.id);
 
             const appointment = await Appointment.findOne({
+                relations:{
+                    client: true,
+                    treatment: true,
+                    stylist: true,
+                },
                 select: {
                     id: true,
                     appointmentDate: true,
                     userId: true,
                     treatmentId: true,
                     stylistId: true,
+                    stylist:{
+                        firstName: true,
+                    },
+                    treatment:{
+                        treatment: true,
+                    }
                 },
                 where: {
                     id: appointmentId
                 }
             });
+            console.log("appooint", appointment);
+            
             if (!appointment) {
                 res.status(404).json({
                     message: "Appointment not found"

@@ -1,7 +1,7 @@
 export const SeederConfig = {
     ADMINS: 1,
     STYLIST: 10,
-    CLIENT: 90,
-    TREATMENT: 30,
-    APPOINTMENT: 100,
+    CLIENT: 150,
+    TREATMENT: 20,
+    APPOINTMENT: 150,
 }

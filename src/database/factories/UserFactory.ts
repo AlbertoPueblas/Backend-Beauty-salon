@@ -11,7 +11,7 @@ export class UserFactory extends Factory<Users> {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         email: faker.internet.email(),
-        phone: faker.phone.number('###-##-##-##'),
+        phone: faker.phone.number('6##-##-##-##'),
         password:  bcrypt.hashSync("123456", 10),
       } as Users;
    }

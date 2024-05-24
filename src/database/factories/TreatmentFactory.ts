@@ -5,10 +5,27 @@ import { faker } from "@faker-js/faker";
 //------------------------------------------------------------------------------
 
 export class TreatmentFactory extends Factory<Treatment> {
-    protected generate(): Treatment {
-        return{
-            treatment: faker.lorem.sentence({min:1 , max:3}).toString(),
-            price: faker.number.float({min:10, max:100})
-        } as Treatment;
-      }
-    }
+  protected generate(): Treatment {
+
+    const beauty = [
+      'Manicura simple',
+      'Manicura completa',
+      'Pedicura',
+      'Depilación',
+      'Exfoliación',
+      'Tinte y corte',
+      'Cortes de caballero',
+      'Tratamiento capilar',
+      'Peinado Curly',
+      'Corte en capas',
+      'Recogido',
+      'Peinado Trenzas',
+      'Peinado Liso',
+    ]
+
+    return {
+      treatment: faker.helpers.arrayElement(beauty),
+            price: faker.number.float({ min: 10, max: 200 })
+    } as Treatment;
+  }
+}

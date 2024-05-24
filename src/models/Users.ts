@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Role } from "./Role";
 import { Appointment } from "./Appointment";
+import { Treatment } from "./Treatment";
 
 //-------------------------------------------------------------
 
@@ -36,9 +37,9 @@ export class Users extends BaseEntity {
     @JoinColumn({ name:"role_id" })
     role!: Role;
 
-    @OneToMany(() => Appointment, (dates) => dates.client)
+    @OneToMany(() => Appointment, (appointment) => appointment.client)
     clientDates?: Appointment[];
 
-    @OneToMany(() => Appointment, (dates) => dates.stylist)
-    stylist!: Users;
+    @OneToMany(() => Appointment, (appointment) => appointment.stylist)
+    stylist?: Users;
 }

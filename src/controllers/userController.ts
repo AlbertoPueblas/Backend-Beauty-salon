@@ -13,12 +13,30 @@ export const userController = {
             const stylistId = UserRole.STYLIST
 
             const [stylists, totalStylists] = await Users.findAndCount({
+                relations:{
+                    stylist: true,
+                    clientDates: {
+                        stylist: true,
+                        treatment: true,
+                    },
+                },
                 select: {
                     id: true,
                     firstName: true,
-                    lastName: true,
                     email: true,
                     phone: true,
+                    isActive:true,
+                    clientDates: {
+                        id: true,
+                        appointmentDate: true,
+                        treatment: {
+                            treatment: true,
+                        },
+                        stylist: {
+                            firstName: true,
+                        },
+                        
+                    },
                 },
                 where: {
                     role: stylistId
@@ -49,23 +67,40 @@ export const userController = {
             const limit = Number(req.query.limit) || 12;
 
             const [users, totalUsers] = await Users.findAndCount({
+                where: {
+                    //Solo pinta los usuarios con role 3
+                    roleId: (3)
+                },
+                relations:{
+                    stylist: true,
+                    clientDates: {
+                        stylist: true,
+                        treatment: true,
+                    },
+                },
                 select: {
                     id: true,
                     firstName: true,
-                    lastName: true,
                     email: true,
                     phone: true,
                     isActive:true,
-                },
-                relations: {
                     clientDates: {
-
-                    }
+                        id: true,
+                        appointmentDate: true,
+                        treatment: {
+                            treatment: true,
+                        },
+                        stylist: {
+                            firstName: true,
+                        },
+                        
+                    },
                 },
-
                 skip: (page - 1) * limit,
                 take: limit,
             });
+            console.log("Qhelo",users);
+            
             if (users.length === 0) {
                 res.status(404).json({
                     message: "Users not found"
@@ -92,32 +127,50 @@ export const userController = {
             const userId = Number(req.params.id);
 
             const user = await Users.findOne({
+                relations:{
+                    stylist: true,
+                    clientDates: {
+                        stylist: true,
+                        treatment: true,
+                    },
+                },
                 select: {
                     id: true,
                     firstName: true,
-                    lastName: true,
                     email: true,
                     phone: true,
-                },
-                relations: {
                     clientDates: {
-                    }
+                        id: true,
+                        appointmentDate: true,
+                        treatment: {
+                            treatment: true,
+                        },
+                        stylist: {
+                            firstName: true,
+                        },
+                        
+                    },
                 },
                 where: {
                     id: userId
                 }
             });
-
+                console.log("User", user,);
+                
             if (!user) {
                 res.status(400).json({
-                    message: "User not found"
+                    message: "appointment not found"
                 })
                 return;
             }
+            
 
             res.json(user);
         } catch (error) {
-
+            res.status(500).json({
+                message: "Failed to retrieve Date",
+                error: (error as any).message
+            });
         }
     },
 
@@ -298,6 +351,33 @@ export const userController = {
             });
         }
     },
+
+    async desactiveProfileByAdmin (req: Request, res: Response): Promise<void> {
+        try {
+            const userDesactive = Number(req.params.id)
+
+            const userToDelete = await Users.findOne({ where: { id: userDesactive } });
+            if (!userToDelete) {
+                res.status(404).json({
+                    message: "User not found"
+                });
+                return;
+            }
+
+        // Actualizar el campo isActive a false
+        userToDelete.isActive = false;
+        await userToDelete.save();
+
+        res.status(202).json({
+            message: "User has been deactivated",
+        });
+        } catch (error) {
+            res.status(500).json({
+                message: "An error occurred while trying to delete the user"
+            });
+        }
+    },
+
 
     async restoreProfileByAdmin (req: Request, res: Response): Promise<void> {
         try {

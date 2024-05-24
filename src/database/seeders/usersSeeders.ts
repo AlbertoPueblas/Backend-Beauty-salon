@@ -25,7 +25,7 @@ export class UsersSeeder extends Seeder {
       const stylistUsers = usersFactory.createMany(STYLIST);
       stylistUsers.forEach((user, i) =>{
          user.role = UserRole.STYLIST;
-         user.email = `artist${i + 1}@manager.com`;
+         user.email = `stylist${i + 1}@manager.com`;
       });
 
       //Clients
