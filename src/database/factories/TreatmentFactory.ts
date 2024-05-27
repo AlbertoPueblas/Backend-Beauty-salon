@@ -11,7 +11,7 @@ export class TreatmentFactory extends Factory<Treatment> {
       'Manicura simple',
       'Manicura completa',
       'Pedicura',
-      'Depilación',
+      'Depilación cara',
       'Exfoliación',
       'Tinte y corte',
       'Cortes de caballero',
@@ -21,11 +21,14 @@ export class TreatmentFactory extends Factory<Treatment> {
       'Recogido',
       'Peinado Trenzas',
       'Peinado Liso',
+      "Depilación integral",
+      "Tratamiento de piel"
+
     ]
 
     return {
       treatment: faker.helpers.arrayElement(beauty),
-            price: faker.number.float({ min: 10, max: 200 })
+            price: faker.number.float({ min: 10, max: 150 })
     } as Treatment;
   }
 }

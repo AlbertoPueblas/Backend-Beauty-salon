@@ -8,11 +8,12 @@ import { userController } from "../controllers/userController";
 const router = express.Router();
 
 //Admin and stylist routes.
-
-router.get("/allUsers", auth, authorize(["Admin", "Stylist"]), userController.getAllUsers);
+router.post("/newStylist", auth, authorize(["Admin"]), userController.createStylist);
+router.get("/allUsers", auth, authorize(["Admin"]), userController.getAllUsers);
 router.get("/allStylist", auth, authorize(["Admin"]), userController.getAllStylist);
+router.get("/allClient", auth, authorize(["Stylist"]), userController.getUsersByStylist);
 router.get("/user/:id", auth, authorize(["Admin"]), userController.getUserById);
-router.get("/appointments/:id", auth, authorize(["Admin", "Stylist"]), userController.getAppointmentById);
+router.get("/appointments/:id", auth, authorize(["Admin",]), userController.getAppointmentById);
 router.put("/restore/:id", auth, authorize(["Admin"]), userController.restoreProfileByAdmin);
 router.put("/disable/:id", auth, authorize(["Admin"]), userController.desactiveProfileByAdmin);
 router.delete("/permanentDell/:id",auth,authorize(["Admin"]), userController.deleteProfileByAdmin)

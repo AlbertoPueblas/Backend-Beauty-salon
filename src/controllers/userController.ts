@@ -8,12 +8,59 @@ import bcrypt from "bcrypt";
 
 export const userController = {
 
+    async createStylist(req: Request, res: Response): Promise<void> {
+        try {
+            const admin = Number(req.params.id)
+            const { firstName, email, password } = req.body;
+
+            if (!firstName || !email || !password) {
+                res.status(400).json({
+                    message: 'Please fill all fields'
+                });
+                return;
+            }
+
+            const hashedPassword = bcrypt.hashSync(password, 10);
+
+            const newStylist = Users.create({
+                firstName: firstName,
+                email: email,
+                password: hashedPassword,
+                role: UserRole.STYLIST,
+            })
+
+            const user = await Users.find();
+            for (let element of user) {
+                if (element.email === email) {
+                    res.status(400).json({
+                        message: 'Email already in use'
+                    });
+                    return;
+                }
+
+            }
+
+            await Users.save(newStylist);
+            res.status(201).json({
+                message: 'Stylist created'
+            });
+        } catch (error) {
+            res.status(201).json({
+                message: "Failed to create stylist",
+                error: (error as any)
+            })
+        }
+    },
+
     async getAllStylist(req: Request, res: Response): Promise<void> {
         try {
-            const stylistId = UserRole.STYLIST
+
 
             const [stylists, totalStylists] = await Users.findAndCount({
-                relations:{
+                where: {
+                    roleId: (2)
+                },
+                relations: {
                     stylist: true,
                     clientDates: {
                         stylist: true,
@@ -25,7 +72,7 @@ export const userController = {
                     firstName: true,
                     email: true,
                     phone: true,
-                    isActive:true,
+                    isActive: true,
                     clientDates: {
                         id: true,
                         appointmentDate: true,
@@ -35,13 +82,11 @@ export const userController = {
                         stylist: {
                             firstName: true,
                         },
-                        
+
                     },
                 },
-                where: {
-                    role: stylistId
-                }
             });
+            console.log("hello", stylists);
             if (stylists.length === 0) {
                 res.status(404).json({
                     message: "Stylist not found"
@@ -71,7 +116,7 @@ export const userController = {
                     //Solo pinta los usuarios con role 3
                     roleId: (3)
                 },
-                relations:{
+                relations: {
                     stylist: true,
                     clientDates: {
                         stylist: true,
@@ -83,7 +128,7 @@ export const userController = {
                     firstName: true,
                     email: true,
                     phone: true,
-                    isActive:true,
+                    isActive: true,
                     clientDates: {
                         id: true,
                         appointmentDate: true,
@@ -93,14 +138,14 @@ export const userController = {
                         stylist: {
                             firstName: true,
                         },
-                        
+
                     },
                 },
                 skip: (page - 1) * limit,
                 take: limit,
             });
-            console.log("Qhelo",users);
-            
+            console.log("Qhelo", users);
+
             if (users.length === 0) {
                 res.status(404).json({
                     message: "Users not found"
@@ -127,7 +172,7 @@ export const userController = {
             const userId = Number(req.params.id);
 
             const user = await Users.findOne({
-                relations:{
+                relations: {
                     stylist: true,
                     clientDates: {
                         stylist: true,
@@ -148,22 +193,22 @@ export const userController = {
                         stylist: {
                             firstName: true,
                         },
-                        
+
                     },
                 },
                 where: {
                     id: userId
                 }
             });
-                console.log("User", user,);
-                
+            console.log("User", user,);
+
             if (!user) {
                 res.status(400).json({
                     message: "appointment not found"
                 })
                 return;
             }
-            
+
 
             res.json(user);
         } catch (error) {
@@ -186,7 +231,7 @@ export const userController = {
                     email: true,
                     phone: true
                 },
-                relations : {
+                relations: {
                     clientDates: true
 
                 },
@@ -303,7 +348,7 @@ export const userController = {
                     return;
                 }
             }
-    
+
 
             if (password) {
                 const hashedPassword = bcrypt.hashSync(password, 10);
@@ -321,12 +366,12 @@ export const userController = {
         } catch (error) {
             res.status(500).json({
                 message: "Failed to update dates",
-                error: ( error as any ).message
+                error: (error as any).message
             });
         }
     },
 
-    async deleteProfileByUser (req: Request, res: Response): Promise<void> {
+    async deleteProfileByUser(req: Request, res: Response): Promise<void> {
         try {
             const userId = Number(req.tokenData.userId)
 
@@ -338,13 +383,13 @@ export const userController = {
                 return;
             }
 
-        // Actualizar el campo isActive a false
-        userToDelete.isActive = false;
-        await userToDelete.save();
+            // Actualizar el campo isActive a false
+            userToDelete.isActive = false;
+            await userToDelete.save();
 
-        res.status(202).json({
-            message: "User has been deactivated",
-        });
+            res.status(202).json({
+                message: "User has been deactivated",
+            });
         } catch (error) {
             res.status(500).json({
                 message: "An error occurred while trying to delete the user"
@@ -352,7 +397,7 @@ export const userController = {
         }
     },
 
-    async desactiveProfileByAdmin (req: Request, res: Response): Promise<void> {
+    async desactiveProfileByAdmin(req: Request, res: Response): Promise<void> {
         try {
             const userDesactive = Number(req.params.id)
 
@@ -364,13 +409,13 @@ export const userController = {
                 return;
             }
 
-        // Actualizar el campo isActive a false
-        userToDelete.isActive = false;
-        await userToDelete.save();
+            // Actualizar el campo isActive a false
+            userToDelete.isActive = false;
+            await userToDelete.save();
 
-        res.status(202).json({
-            message: "User has been deactivated",
-        });
+            res.status(202).json({
+                message: "User has been deactivated",
+            });
         } catch (error) {
             res.status(500).json({
                 message: "An error occurred while trying to delete the user"
@@ -379,7 +424,7 @@ export const userController = {
     },
 
 
-    async restoreProfileByAdmin (req: Request, res: Response): Promise<void> {
+    async restoreProfileByAdmin(req: Request, res: Response): Promise<void> {
         try {
             const userRest = Number(req.params.id)
             const userToRestore = await Users.findOne({ where: { id: userRest } });
@@ -400,16 +445,16 @@ export const userController = {
         } catch (error) {
             res.status(500).json({
                 message: "An error occurred while trying to restore the user",
-                error:(error as any).message
+                error: (error as any).message
             });
         }
     },
 
-    async deleteProfileByAdmin (req: Request, res: Response): Promise<void> {
+    async deleteProfileByAdmin(req: Request, res: Response): Promise<void> {
         try {
-            
+
             const userRest = Number(req.params.id);
-            
+
             const userToDelete = await Users.delete({ id: userRest });
 
             if (userToDelete.affected === 0) {
@@ -425,6 +470,56 @@ export const userController = {
             res.status(500).json({
                 message: "Failed to delete user",
                 error: (error as any).message
+            });
+        }
+    },
+
+    async getUsersByStylist(req: Request, res: Response): Promise<void> {
+        try {
+
+            const [users, totalUsers] = await Users.findAndCount({
+                relations: {
+                    stylist: true,
+                    clientDates: {
+                        stylist: true,
+                        treatment: true,
+                    },
+                },
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    isActive: true,
+                    clientDates: {
+                        id: true,
+                        appointmentDate: true,
+                        treatment: {
+                            treatment: true,
+                        },
+                        stylist: {
+                            firstName: true,
+                        },
+                    },
+                },
+            });
+
+            if (users.length === 0) {
+                res.status(404).json({
+                    message: "No assigned users found",
+                });
+                return;
+            }
+
+            res.status(200).json({
+                users: users,
+                total_users: totalUsers,
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "Ups! Something went wrong",
+                error: (error as any).message,
             });
         }
     },
