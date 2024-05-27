@@ -11,7 +11,6 @@ const router = express.Router();
 router.post("/newStylist", auth, authorize(["Admin"]), userController.createStylist);
 router.get("/allUsers", auth, authorize(["Admin"]), userController.getAllUsers);
 router.get("/allStylist", auth, authorize(["Admin"]), userController.getAllStylist);
-router.get("/allClient", auth, authorize(["Stylist"]), userController.getUsersByStylist);
 router.get("/user/:id", auth, authorize(["Admin"]), userController.getUserById);
 router.get("/appointments/:id", auth, authorize(["Admin",]), userController.getAppointmentById);
 router.put("/restore/:id", auth, authorize(["Admin"]), userController.restoreProfileByAdmin);

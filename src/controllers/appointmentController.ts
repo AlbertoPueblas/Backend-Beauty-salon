@@ -49,8 +49,8 @@ export const appointmentController = {
             const limit = Number(req.query.limit) || 15;
 
             const [appointment, totalAppointment] = await Appointment.findAndCount({
-                
-                relations:{
+
+                relations: {
                     client: true,
                     treatment: true,
                     stylist: true,
@@ -61,20 +61,20 @@ export const appointmentController = {
                     userId: true,
                     treatmentId: true,
                     stylistId: true,
-                    client:{
+                    client: {
                         firstName: true,
                         email: true,
                         phone: true,
                     },
-                    treatment:{
+                    treatment: {
                         treatment: true,
                     },
-                    stylist:{
+                    stylist: {
                         firstName: true,
                     }
                 },
-            
- 
+
+
                 skip: (page - 1) * limit,
                 take: limit,
             });
@@ -107,7 +107,7 @@ export const appointmentController = {
             const appointmentId = Number(req.params.id);
 
             const appointment = await Appointment.findOne({
-                relations:{
+                relations: {
                     client: true,
                     treatment: true,
                     stylist: true,
@@ -118,10 +118,10 @@ export const appointmentController = {
                     userId: true,
                     treatmentId: true,
                     stylistId: true,
-                    stylist:{
+                    stylist: {
                         firstName: true,
                     },
-                    treatment:{
+                    treatment: {
                         treatment: true,
                     }
                 },
@@ -130,7 +130,7 @@ export const appointmentController = {
                 }
             });
             console.log("appooint", appointment);
-            
+
             if (!appointment) {
                 res.status(404).json({
                     message: "Appointment not found"
@@ -149,19 +149,19 @@ export const appointmentController = {
     async updateAppointment(req: Request, res: Response): Promise<void> {
         try {
             const { id, appointmentDate, stylistId, treatmentId } = req.body;
-    
+
             const dateToUpdate = await Appointment.findOne({ where: { id } });
             if (!dateToUpdate) {
                 res.status(404).json({ message: "Date not found" });
                 return;
             }
-    
+
             dateToUpdate.appointmentDate = appointmentDate;
             dateToUpdate.stylistId = stylistId;
             dateToUpdate.treatmentId = treatmentId;
-    
+
             await dateToUpdate.save();
-    
+
             res.status(202).json({
                 message: "Appointment has been updated",
             });
@@ -172,7 +172,7 @@ export const appointmentController = {
             });
         }
     },
-    
+
 
     async deleteAppointment(req: Request, res: Response): Promise<void> {
         try {
@@ -199,26 +199,26 @@ export const appointmentController = {
     async updateByAdminStylist(req: Request, res: Response): Promise<void> {
         try {
             const appointmentId = Number(req.params.id);
-    
+
             // Desestructurar los campos que se deben actualizar desde el cuerpo de la solicitud
             const { ...updateDate } = req.body;
-    
+
             // Buscar la cita por ID
             const appointmentToUpdate = await Appointment.findOne({ where: { id: appointmentId } });
             if (!appointmentToUpdate) {
                 res.status(404).json({ message: "Appointment not found" });
                 return;
             }
-    
+
             // Actualizar los campos de la cita
             Object.assign(appointmentToUpdate, updateDate);
-    
+
             // Guardar los cambios
             await appointmentToUpdate.save();
-    
+
             // Responder con la cita actualizada
             res.status(200).json(appointmentToUpdate);
-    
+
         } catch (error) {
             // Manejo de errores
             console.error(error);
@@ -226,7 +226,7 @@ export const appointmentController = {
         }
     },
 
-    async deleteAppointmentByAdmin (req: Request, res: Response): Promise <void> {
+    async deleteAppointmentByAdmin(req: Request, res: Response): Promise<void> {
         try {
             const appointment = Number(req.params.id);
 
@@ -246,5 +246,64 @@ export const appointmentController = {
                 error: (error as any).message
             })
         }
-    }
+    },
+
+    async getUsersByStylist(req: Request, res: Response): Promise<void> {
+        try {
+
+            //Pagination
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 10;
+
+            const stylistId = Number(req.tokenData.userId)
+
+            const [appointment, totalAppointment] = await Appointment.findAndCount({
+                relations: {
+                    stylist: true,
+                    client: true,
+                    treatment: true
+                },
+                select: {
+                    client: {
+                        firstName: true,
+                        email: true,
+                        phone: true,
+                    },
+                    stylist: {
+                        firstName: true,
+                    },
+                    treatment: {
+                        treatment: true,
+                        price: true,
+                    }
+                },
+                where: {
+                    stylist: { id: stylistId },
+                },
+                skip: (page - 1) * limit,
+                take: limit,
+
+            });
+
+            if (appointment.length === 0) {
+                res.status(404).json({
+                    message: "No assigned users found",
+                });
+                return;
+            }
+            const totalPages = Math.ceil(totalAppointment / limit);
+
+            res.status(200).json({
+                appointment: appointment,
+                current_page: page,
+                per_page: limit,
+                total_pages: totalPages,
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "Ups! Something went wrong",
+                error: (error as any).message,
+            });
+        }
+    },
 };

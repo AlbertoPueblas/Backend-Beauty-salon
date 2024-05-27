@@ -16,6 +16,7 @@ router.delete("/deleteAppointment/:id", auth, appointmentController.deleteAppoin
 
 router.get("/totalDates",auth, authorize(["Admin"]),appointmentController.getAllAppointment);
 router.get("/date/:id",auth, authorize(["Admin"]),appointmentController.getAppointmentById);
+router.get("/allClients",auth, authorize(["Stylist"]),appointmentController.getUsersByStylist);
 router.delete("/deleteByAdmin/:id",auth, authorize(["Admin"]),appointmentController.deleteAppointmentByAdmin);
 router.put("/updateByAd/:id", auth, authorize(["Admin","Stylist"]),appointmentController.updateByAdminStylist )
 
