@@ -50,7 +50,12 @@ export class CreateUsersTable1715603290082 implements MigrationInterface {
                  {
                     name: "role_id",
                     type: "int",
-                 },    
+                 },
+                 {
+                  name: "registration_date_time",
+                  type: "timestamp", 
+                  default: "CURRENT_TIMESTAMP", 
+               },    
               ],
               foreignKeys: [
                  {

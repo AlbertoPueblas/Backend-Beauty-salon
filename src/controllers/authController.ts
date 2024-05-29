@@ -33,11 +33,16 @@ export const authController = {
             //Contraseña haseada
             const hasedPassword = bcrypt.hashSync( password, 10 );
 
+            const registrationDateTime = new Date();//Guarda la fecha y la hora
+            console.log("hora", registrationDateTime);
+            
+
             const newUser = Users.create({
                 firstName: firstName,
                 email: email,
                 password:  hasedPassword,
                 role: UserRole.CLIENT,
+                registrationDateTime: registrationDateTime,
             });
 
             await Users.save(newUser);

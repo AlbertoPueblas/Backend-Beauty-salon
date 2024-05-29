@@ -31,6 +31,9 @@ export class Users extends BaseEntity {
     @Column({ name: "role_id" })
     roleId!: number;
 
+    @Column({ name: "registration_date_time", default: () => "CURRENT_TIMESTAMP" }) // Nueva columna para la fecha y hora de registro
+    registrationDateTime!: Date;
+
     //Relation
 
     @ManyToOne(() => Role, (role) => role.users )

@@ -54,8 +54,10 @@ export const userController = {
 
     async getAllStylist(req: Request, res: Response): Promise<void> {
         try {
-
-
+            // Pagination
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 12;
+    
             const [stylists, totalStylists] = await Users.findAndCount({
                 where: {
                     roleId: (2)
@@ -82,28 +84,33 @@ export const userController = {
                         stylist: {
                             firstName: true,
                         },
-
                     },
                 },
+                skip: (page - 1) * limit,
+                take: limit,
             });
-            console.log("hello", stylists);
+    
             if (stylists.length === 0) {
                 res.status(404).json({
                     message: "Stylist not found"
                 });
                 return;
             }
-
+            const totalPages = Math.ceil(totalStylists / limit);
+    
             res.status(200).json({
                 stylists: stylists,
+                current_page: page,
+                per_page: limit,
+                total_pages: totalPages,
             });
         } catch (error) {
             res.status(500).json({
                 message: "ups!, something went wrong"
             });
-
         }
     },
+    
 
     async getAllUsers(req: Request, res: Response): Promise<void> {
         try {
@@ -129,6 +136,7 @@ export const userController = {
                     email: true,
                     phone: true,
                     isActive: true,
+                    registrationDateTime: true,
                     clientDates: {
                         id: true,
                         appointmentDate: true,
@@ -163,7 +171,6 @@ export const userController = {
             res.status(500).json({
                 message: "ups!, something went wrong"
             });
-
         }
     },
 
