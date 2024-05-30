@@ -129,7 +129,6 @@ export const appointmentController = {
                     id: appointmentId
                 }
             });
-            console.log("appooint", appointment);
 
             if (!appointment) {
                 res.status(404).json({
@@ -309,12 +308,10 @@ export const appointmentController = {
 
     async getAllStylist(req: Request, res: Response): Promise<void> {
         try {
+            // Paginación
 
-            //Pagination
-            const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 12;
-
-            const [stylists, totalStylists] = await Appointment.findAndCount({
+    
+            const [appointments, totalAppointments] = await Appointment.findAndCount({
                 relations: {
                     stylist: true,
                     client: true,
@@ -335,24 +332,30 @@ export const appointmentController = {
                     }
                 },
 
-                skip: (page - 1) * limit,
-                take: limit,
-
             });
-
-            if (stylists.length === 0) {
+    
+            if (appointments.length === 0) {
                 res.status(404).json({
                     message: "No assigned users found",
                 });
                 return;
             }
-            const totalPages = Math.ceil(totalStylists / limit);
+    
+            // Agrupar citas por estilista
+            const groupStylists = appointments.reduce((response: any, appointment: any) => {
+                const stylistName = appointment.stylist.firstName;
+                if (!response[stylistName]) {
+                    response[stylistName] = [];
+                }
+                response[stylistName].push(appointment);
+                return response;
+            }, {});
+    
 
+    
             res.status(200).json({
-                appointment: stylists,
-                current_page: page,
-                per_page: limit,
-                total_pages: totalPages,
+                stylists: groupStylists,
+
             });
         } catch (error) {
             res.status(500).json({
@@ -360,5 +363,5 @@ export const appointmentController = {
                 error: (error as any).message,
             });
         }
-    },
+    },    
 };

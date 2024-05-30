@@ -117,7 +117,6 @@ export const treatmentController = {
                 ...resTreatmentData,
                 
             }
-            console.log(updateTreatment);
 
             await Treatment.save(updateTreatment);
 

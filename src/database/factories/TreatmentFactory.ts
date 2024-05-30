@@ -11,7 +11,7 @@ export class TreatmentFactory extends Factory<Treatment> {
       'Manicura simple',
       'Manicura completa',
       'Pedicura',
-      'Depilación cara',
+      'Depilación facial',
       'Exfoliación',
       'Tinte y corte',
       'Cortes de caballero',
@@ -23,7 +23,6 @@ export class TreatmentFactory extends Factory<Treatment> {
       'Peinado Liso',
       "Depilación integral",
       "Tratamiento de piel"
-
     ]
 
     return {

@@ -34,9 +34,7 @@ export const authController = {
             const hasedPassword = bcrypt.hashSync( password, 10 );
 
             const registrationDateTime = new Date();//Guarda la fecha y la hora
-            console.log("hora", registrationDateTime);
             
-
             const newUser = Users.create({
                 firstName: firstName,
                 email: email,
@@ -61,7 +59,6 @@ export const authController = {
     async login (req: Request, res: Response ): Promise<void> {
         try {
             const { email, password, role } = req.body;
-            console.log(req.body);
 
             if( !email || !password || role ) {
                 res.status(400).json ({
@@ -108,10 +105,8 @@ export const authController = {
             }
             const tokenPayload = {
                 userId: user.id,
-                userRole: user.role.id,
-                
+                userRole: user.role.id,                
             };
-            console.log(tokenPayload,"token payload");
 
             const token = jwt.sign(
                 tokenPayload,
