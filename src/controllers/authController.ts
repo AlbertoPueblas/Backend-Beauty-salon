@@ -128,5 +128,45 @@ export const authController = {
             
         }
 
+    },
+
+    async validatePassword(req: Request, res: Response): Promise<void> {
+        try {
+            const { currentPassword } = req.body;
+            const userId = Number(req.tokenData.id);
+
+            const user = await Users.findOne({
+                where: {
+                    id: userId
+                },
+                select: {
+                    password: true,
+                },
+            });
+
+            if (!user) {
+                res.status(404).json({
+                    message: 'User not found'
+                });
+                return;
+            }
+
+            const isPasswordValid = bcrypt.compareSync(currentPassword, user.password);
+            if (!isPasswordValid) {
+                res.status(400).json({
+                    message: 'Current password is incorrect'
+                });
+                return;
+            }
+
+            res.status(200).json({
+                message: 'Password is valid'
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "Failed to validate password",
+                error: (error as any)
+            });
+        }
     }
 };

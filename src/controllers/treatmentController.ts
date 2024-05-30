@@ -37,7 +37,7 @@ export const treatmentController = {
         try {
             //Pagination
             const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 15;
+            const limit = Number(req.query.limit) || 10;
 
             const [treatment, totalTreatment] = await Treatment.findAndCount({
                 select: {
