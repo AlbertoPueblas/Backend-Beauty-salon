@@ -24,7 +24,7 @@ export class TreatmentFactory extends Factory<Treatment> {
       "Depilación integral",
       "Tratamiento de piel"
     ]
-
+    
     return {
       treatment: faker.helpers.arrayElement(beauty),
             price: faker.number.float({ min: 10, max: 150 })
