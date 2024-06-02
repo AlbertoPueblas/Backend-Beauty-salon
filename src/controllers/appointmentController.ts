@@ -308,8 +308,6 @@ export const appointmentController = {
 
     async getAllStylist(req: Request, res: Response): Promise<void> {
         try {
-            // Paginación
-
     
             const [appointments, totalAppointments] = await Appointment.findAndCount({
                 relations: {
