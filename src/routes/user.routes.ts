@@ -26,6 +26,7 @@ router.get("/profile", auth, userController.getMeProfile);
 router.get("/appointment", auth, userController.getMeAppointment);
 router.put("/putProfile", auth, userController.updateProfile);
 router.put("/delete", auth, userController.deleteProfileByUser);
+router.put("/active", auth, userController.activeProfileByUser);
 
 
 export default router

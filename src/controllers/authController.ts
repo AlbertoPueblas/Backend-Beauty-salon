@@ -58,7 +58,7 @@ export const authController = {
 
     async login (req: Request, res: Response ): Promise<void> {
         try {
-            const { email, password, role } = req.body;
+            const { email, password, role, } = req.body;
 
             if( !email || !password || role ) {
                 res.status(400).json ({
@@ -91,8 +91,8 @@ export const authController = {
             }
 
             if (!user?.isActive) {
-                res.status(400).json ({
-                    message: 'User not found'
+                res.status(418).json ({
+                    isActive: user.isActive
                 });
                 return;
             }
@@ -105,7 +105,7 @@ export const authController = {
             }
             const tokenPayload = {
                 userId: user.id,
-                userRole: user.role.id,                
+                userRole: user.role.id,     
             };
 
             const token = jwt.sign(
@@ -119,6 +119,7 @@ export const authController = {
             res.status(200).json ({
                 message: "Login sucessfuly",
                 token,
+                isActive: user.isActive
             });
         } catch (error) {
             res.status(500).json({

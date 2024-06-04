@@ -402,6 +402,32 @@ export const userController = {
         }
     },
 
+    async activeProfileByUser(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = Number(req.tokenData.userId)
+
+            const userToActive = await Users.findOne({ where: { id: userId } });
+            if (!userToActive) {
+                res.status(404).json({
+                    message: "User not found"
+                });
+                return;
+            }
+
+            // Actualizar el campo isActive a true
+            userToActive.isActive = true;
+            await userToActive.save();
+
+            res.status(202).json({
+                message: "User has been activated",
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "An error occurred while trying to active the user"
+            });
+        }
+    },
+
     async desactiveProfileByAdmin(req: Request, res: Response): Promise<void> {
         try {
             const userDesactive = Number(req.params.id)
